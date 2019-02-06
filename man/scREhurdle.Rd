@@ -13,32 +13,32 @@ scREhurdle(Y, treatGroup, useCDR = TRUE, typeRE = "ind", subpop = NULL,
 \item{Y}{data.frame or matrix where the rows correspond to genes and
 columns correspond to cells. Y must contain integers.}
 
-\item{treatGroup}{vector or factor of length ncol(Y) indicating the 
-treatment assigments (control or treatment) of the cells.}
+\item{treatGroup}{vector or factor of length ncol(Y) indicating the
+treatment assignments (control or treatment) of the cells.}
 
-\item{useCDR}{whether CDR, the proportion of genes expressed per cell, is 
+\item{useCDR}{whether CDR, the proportion of genes expressed per cell, is
 calculated and used in model matrix (X).}
 
 \item{typeRE}{set type of random effect to use.  Choices are "none", "ind",
 or "corr".}
 
-\item{subpop}{vector or factor of length ncol(Y) indicating the 
-cluster/subpopulation assignment of cells. Used ONLY in the 
-correlated RE model. Cells in different treatment groups should 
+\item{subpop}{vector or factor of length ncol(Y) indicating the
+cluster/subpopulation assignment of cells. Used ONLY in the
+correlated RE model. Cells in different treatment groups should
 be clustered into separate subpopulations.}
 
 \item{addCovariates}{data.frame containing values of additional covariates to
 add to model matrix (X). It is recommended that continuous values are scaled
 to have mean 0 and standard deviation 0.5.}
 
-\item{coefSamps}{when set to "treatment", only regression coefficients related to 
-determining DE genes (i.e., the treatment indicator coefficients) are stored in the 
-results, thereby minimizing object size. The "all" option will store all regression 
+\item{coefSamps}{when set to "treatment", only regression coefficients related to
+determining DE genes (i.e., the treatment indicator coefficients) are stored in the
+results, thereby minimizing object size. The "all" option will store all regression
 coefficients. Note: 2 x nrow(Y) x (ncol(X)+1) parameters are stored with "all".}
 
-\item{parSamps}{character vector indicating additional model parameters to 
+\item{parSamps}{character vector indicating additional model parameters to
 store. Choices include: "omega", "phi", "lambda1", "lambda2", "sigma2".
-Additional choices for correlated RE model include: "gamma_t", 
+Additional choices for correlated RE model include: "gamma_t",
 "omega_star".}
 
 \item{adjustMethod}{p.adjust.method passed to p.adjust() function.}
@@ -47,8 +47,8 @@ Additional choices for correlated RE model include: "gamma_t",
 
 \item{tol}{passed to vb() function in rstan.}
 
-\item{eta}{passed to vb() function in rstan. Eta values as high as 0.4 may work for some datasets. 
-Increasing eta should decrease computational time but could cause errors from Stan. Reduce 
+\item{eta}{passed to vb() function in rstan. Eta values as high as 0.4 may work for some datasets.
+Increasing eta should decrease computational time but could cause errors from Stan. Reduce
 eta if model mispecification errors occur.}
 
 \item{output_samples}{passed to vb() function in rstan.}
@@ -60,16 +60,16 @@ eta if model mispecification errors occur.}
 \value{
 scREhurdle.fit object containing:
 
-\itemize{ 
+\itemize{
   \item{stanFit}{: an object of stanfit-class.}
   \item{inputData}{: list of data input into the Stan model.}
   \item{deTab}{: data.frame consisting of beta estimates, statistics, and p-values
         associated with identifying DE genes.}
-  \item{geneTab}{: data.frame providing estimates for all stored model parameters 
+  \item{geneTab}{: data.frame providing estimates for all stored model parameters
         corresponding to genes (i.e. beta_L, beta_C, zeta_L, zeta_C, phi).}
-  \item{cellTab}{: data.frame providing cellular details and stored model parameter 
+  \item{cellTab}{: data.frame providing cellular details and stored model parameter
         estimates corresponding to cells (i.e. treatGroup, CDR, subpop, omega).}
-  \item{hyperEst}{: vector with stored hyperparameter estimates of "lambda1", "lambda2", 
+  \item{hyperEst}{: vector with stored hyperparameter estimates of "lambda1", "lambda2",
         and/or "sigma2" if included in parSamps.}
 }
 }

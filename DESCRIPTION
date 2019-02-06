@@ -1,5 +1,5 @@
 Package: scREhurdle
-Version: 0.0.0.1
+Version: 0.1.0
 Title: Detecting differentially expressed genes in scRNA-seq data
 Description: R package implementing the methods from "Detection of differentially 		     expressed genes in discrete single-cell RNA sequencing data using a hurdle 	     model with correlated random effects.
 Authors@R: person("Michael", "Sekula", , "michael.sekula@louisville.edu", c("aut", "cre"))
@@ -13,3 +13,6 @@ LinkingTo: StanHeaders (>= 2.17.2), rstan (>= 2.17.3), BH (>= 1.66.0-1), Rcpp (>
 SystemRequirements: GNU make
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
