@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Michael Sekula" />
+
+<meta name="date" content="2019-02-09" />
+
+<title>Using the scREhurdle package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using the scREhurdle package</h1>
+<h4 class="author"><em>Michael Sekula</em></h4>
+<h4 class="date"><em>2019-02-09</em></h4>
+
+
+
+<p>This vignette demonstrates how to use the <code>scREhurdle</code> package to perform a differential expression analysis on discrete single-cell RNA-seq (scRNA-seq) data. It should be noted that <code>scREhurdle</code> does import the <code>rstan</code> package. Details about <code>rstan</code> can be found <a href="https://mc-stan.org/users/interfaces/rstan">here</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the scREhurdle package</span>
+<span class="kw">library</span>(scREhurdle)
+<span class="co">#&gt; Loading required package: Rcpp</span></code></pre></div>
+<div id="the-data" class="section level2">
+<h2>The Data</h2>
+<p>The <code>scREhurdle</code> function requires discrete scRNA-seq data, so either a matrix or data frame of read counts is acceptable. The rows of the data correspond to genes and the columns correspond to cells. For the purpose of this vignette, it is assumed that the dataset has already been cleaned and is ready to analyze. An example dataset is included in the <code>scREhurdle</code> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load data</span>
+<span class="kw">data</span>(toyDat)
+scDat &lt;-<span class="st"> </span>toyDat<span class="op">$</span>scDat
+<span class="kw">head</span>(scDat)
+<span class="co">#&gt;       C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 C11 C12 C13 C14 C15 C16 C17 C18 C19</span>
+<span class="co">#&gt; Gene1  0  0  0  0 30 13 33  0 24   6   0   0   0   0   0   0   0   0   0</span>
+<span class="co">#&gt; Gene2  0  0  0  8  0  0  1  6  0   1   0   0   0   0   0   0   0   0   0</span>
+<span class="co">#&gt; Gene3  0  0  0  0  7  0  0  0  0   0   0   0   0   0   0   0   0   0   0</span>
+<span class="co">#&gt; Gene4  0  0  0  1  9  5  2  0 13  43   0   0   0   0   0   0   0   0  20</span>
+<span class="co">#&gt; Gene5  1  0  0  0  3 17  7  1  0  16   3   1   1   0   0  18   0   0   0</span>
+<span class="co">#&gt; Gene6  0  0  0  8  0  0  8  7  0  13  23   0   0   0   0   0   0   1   0</span>
+<span class="co">#&gt;       C20 C21 C22 C23 C24 C25  T1 T2  T3 T4 T5  T6  T7 T8  T9 T10 T11 T12</span>
+<span class="co">#&gt; Gene1  17   1  17   0   0   0 216 28 109 30  0 220  83 60   0 160  94 164</span>
+<span class="co">#&gt; Gene2   0   0   8   0  11  46  17  0  20  0  0   9   9 25   0 508  68  73</span>
+<span class="co">#&gt; Gene3   0   0   1   0   0   0   0  0   2  0  0  22  19  0   9  17   0   8</span>
+<span class="co">#&gt; Gene4 477  33   0   0   0   7   0  0  41  0  0   9  26 81   0   0   0   0</span>
+<span class="co">#&gt; Gene5   5   6   2   2   0   2 125 35 162 56  0  33 192 60 263 227  52   5</span>
+<span class="co">#&gt; Gene6   5   0  23   2   5   0  57  0  83  0  0  86 102  2  53  23  45  77</span>
+<span class="co">#&gt;       T13 T14 T15 T16 T17 T18 T19 T20 T21 T22 T23 T24 T25</span>
+<span class="co">#&gt; Gene1 294   5 215  21  29   0 174 190 113  37 119  30 229</span>
+<span class="co">#&gt; Gene2  52  51 165  58 133   6 108   0 178   8  63  67  32</span>
+<span class="co">#&gt; Gene3 131   0   0  45  16   0  26   0   0   0   4   1   0</span>
+<span class="co">#&gt; Gene4   0   0   0   5   0   0   0   0 211  35   0   0   0</span>
+<span class="co">#&gt; Gene5 242   0  55  70  61   0  84   4 180  43  46  13  27</span>
+<span class="co">#&gt; Gene6  51  10  54 115   5   0 361  46  88  11  20  39 343</span></code></pre></div>
+<p>The <code>toyDat</code> object is actually a list containing two separate objects: <code>scDat</code> and <code>subpop</code>. The example dataset is <code>scDat</code>, which consists of 100 rows (genes) and 50 columns (cells). In this data, the first 25 cells belong to the control group (C) and the remaining 25 cells belong to the treatment group (T).</p>
+<div id="subpopulation-clustering-recommended-but-optional" class="section level3">
+<h3>Subpopulation Clustering (Recommended but Optional)</h3>
+<p>The second object <code>subpop</code> contains the subpopulation assignment for each cell. For a real data analysis, these assignments can be determined by a clustering algorithm suitable for clustering scRNA-seq data (e.g., SNN-Cliq, SC3, etc.). The clusters should be determined separately for each treatment group. This means there should be no overlap in the cluster assignments between cells in different treatment groups. From the output below we see the first 25 cells (in the control group) are clustered into two groups (1 and 2), while the next 25 cells (in the treatment group) are clustered into three groups (3, 4, and 5).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extract example subpopulation clustering assignment</span>
+subpop &lt;-<span class="st"> </span>toyDat<span class="op">$</span>subpop
+subpop[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>]
+<span class="co">#&gt;  [1] 1 1 1 2 1 2 2 1 1 2 1 1 1 1 1 1 1 1 1 2 2 2 1 1 1</span>
+subpop[<span class="dv">26</span><span class="op">:</span><span class="dv">50</span>]
+<span class="co">#&gt;  [1] 4 5 3 5 5 3 3 4 3 3 3 4 4 5 3 3 3 5 4 3 3 3 4 4 5</span></code></pre></div>
+<p>Including a subpopulation assignment is recommended for data analysis, but it is not required to run the <code>scREhurdle</code> function.</p>
+</div>
+</div>
+<div id="differential-expression-analysis" class="section level2">
+<h2>Differential Expression Analysis</h2>
+<p>The <code>scREhurdle</code> function uses Stan’s variational algorithm for approximate posterior sampling to determine differentially expressed (DE) genes. Essentially, <code>scREhurdle</code> is a wrapper function that allows users to use the <code>vb</code> function in <code>rstan</code> to implement the hurdle model methodology proposed in the <em>Detection of differentially expressed genes in discrete single-cell RNA sequencing data using a hurdle model with correlated random effects</em> manuscript. Details about the <code>vb</code> function can be found at the <a href="https://mc-stan.org/users/interfaces/rstan">RStan website</a>.</p>
+<p>The main parameters of the <code>scREhurdle</code> function are listed below:</p>
+<ul>
+<li><code>Y</code> - data.frame or matrix where the rows correspond to genes and columns correspond to cells.</li>
+<li><code>treatGroup</code> - vector or factor indicating the treatment assignments (control or treatment) of the cells.</li>
+<li><code>useCDR</code> - whether CDR, the proportion of genes expressed per cell, is calculated and used in model matrix.</li>
+<li><code>typeRE</code> - set the type of random effect to use.</li>
+<li><code>subpop</code> - vector or factor of length indicating the subpopulation assignment of cells. Used ONLY in the correlated RE model.</li>
+</ul>
+<p>These parameters help the user define the modeling structure for differential expression analysis. All parameters of the <code>vb</code> function can be passed through <code>scREhurdle</code>.</p>
+<div id="correlated-random-effects-cre-model" class="section level3">
+<h3>Correlated Random Effects (CRE) Model</h3>
+<p>The CRE model requires the use of a subpopulation structure determined by a cluster analysis of the cells. <em>See the next section on Independent Random Effects if no subpopulation structure is being used.</em></p>
+<p>To analyze discrete scRNA-seq data with the CRE model, the following input is required:</p>
+<ul>
+<li><code>Y</code> - data as a matrix or data.frame</li>
+<li><code>treatGroup</code> - vector or factor with the treatment assignments (control or treatment) of the cells.</li>
+<li><code>typeRE</code> - set to “cor”</li>
+<li><code>subpop</code> - vector or factor of length indicating the subpopulation assignment of cells.</li>
+</ul>
+<p>As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding <code>useCDR = FALSE</code> as an argument will exclude it from the analysis.</p>
+<p>A seed for the <code>vb</code> function is also included in the example code below to ensure reproducible results. <em>Note: Running this code may take several minutes</em></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain treatment assignments</span>
+treat &lt;-<span class="st"> </span><span class="kw">substr</span>(<span class="kw">colnames</span>(scDat), <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">stop =</span> <span class="dv">1</span>)
+
+<span class="co"># Analysis with CRE model</span>
+mod.CRE &lt;-<span class="st"> </span><span class="kw">scREhurdle</span>(<span class="dt">Y=</span>scDat, <span class="dt">treatGroup=</span>treat, <span class="dt">typeRE=</span><span class="st">&quot;cor&quot;</span>, <span class="dt">subpop=</span>subpop, <span class="dt">stan_seed=</span><span class="dv">523</span>)
+
+<span class="co"># For the sake of brevity, the following is example output</span>
+<span class="co"># produced when running scREhurdle</span>
+
+<span class="co">#&gt; Running CRE Stan model... </span>
+<span class="co">#&gt; ------------------------------------------------------------</span>
+<span class="co">#&gt; EXPERIMENTAL ALGORITHM:</span>
+<span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable</span>
+<span class="co">#&gt;   or buggy. The interface is subject to change.</span>
+<span class="co">#&gt; ------------------------------------------------------------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Gradient evaluation took 0.00335 seconds</span>
+<span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 33.5 seconds.</span>
+<span class="co">#&gt; Adjust your expectations accordingly!</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Begin stochastic gradient ascent.</span>
+<span class="co">#&gt;   iter       ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
+<span class="co">#&gt;    100     -2e+04             1.000            1.000</span>
+<span class="co">#&gt;    200     -2e+04             0.564            1.000</span>
+<span class="co">#&gt;    300     -2e+04             0.382            0.128</span>
+<span class="co">#&gt;    400     -2e+04             0.288            0.128</span>
+<span class="co">#&gt;    ...       ...               ...              ...</span>
+<span class="co">#&gt;   7800     -1e+04             0.000            0.000</span>
+<span class="co">#&gt;   7900     -1e+04             0.000            0.000   MEAN ELBO CONVERGED</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior... </span>
+<span class="co">#&gt; COMPLETED.</span></code></pre></div>
+<p>After computation, <code>mod.CRE</code> is an object of class <code>scREhurdle.fit</code>. Information relevant to differential expression (i.e., parameter estimates and test statistics of the treatment indicator variables) can be extracted with <code>$deTab</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Table with DE analysis results
+DEtab1 &lt;-<span class="st"> </span>mod.CRE<span class="op">$</span>deTab
+<span class="kw">head</span>(DEtab1)
+<span class="co">#&gt;       treatGroupT_L         L.Z       L.pval treatGroupT_C       C.Z</span>
+<span class="co">#&gt; Gene1   -0.91542840 -1.17699016 0.2391994323      1.580632  4.259327</span>
+<span class="co">#&gt; Gene2   -0.23150809 -0.30037485 0.7638912465      1.349139  3.253626</span>
+<span class="co">#&gt; Gene3   -0.05723265 -0.07179964 0.9427613616      1.026127  1.612193</span>
+<span class="co">#&gt; Gene4    2.43453230  3.46277608 0.0005346331     -1.118153 -1.581283</span>
+<span class="co">#&gt; Gene5    0.51217350  0.61844276 0.5362835187      2.164009  5.907670</span>
+<span class="co">#&gt; Gene6    0.28476187  0.36485140 0.7152223315      2.047360  4.864511</span>
+<span class="co">#&gt;             C.pval     chisq   chisq.pval   chisq.padj</span>
+<span class="co">#&gt; Gene1 2.050436e-05 19.402395 6.121015e-05 3.400564e-04</span>
+<span class="co">#&gt; Gene2 1.139421e-03 10.633032 4.909829e-03 1.258931e-02</span>
+<span class="co">#&gt; Gene3 1.069201e-01  2.605517 2.717811e-01 3.576067e-01</span>
+<span class="co">#&gt; Gene4 1.138133e-01 14.712229 6.386752e-04 2.280983e-03</span>
+<span class="co">#&gt; Gene5 3.469794e-09 35.198573 2.273668e-08 3.248097e-07</span>
+<span class="co">#&gt; Gene6 1.147404e-06 23.892133 6.484690e-06 4.631921e-05</span></code></pre></div>
+<p>Parameter estimates, Z test statistics, and unadjusted p-values are displayed in the first six columns of <code>DEtab1</code>. Because a hurdle model has been fit, there are two sets of parameters and associated test statistics: one set from the logistic regression and one set from zero-truncated negative binomial regression. The first three columns represent the values associated with the logistic regression (note the “L” in the column names). The next three columns represent the values associated with count model (note the “C” in the column names). While this information is useful in determining whether genes are DE in terms of proportion of zeros or actual expression, more often the interest is in a single combined result. The <code>chisq</code> column provides the two-dimensional test statistics that combine information from both parts of the hurdle model to determine DE genes. The final two columns present the unadjusted and adjusted p-values of these test statistics. By default, p-values are adjusted with the Benjamini-Hochberg method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain gene names</span>
+gene.names &lt;-<span class="st"> </span><span class="kw">rownames</span>(scDat)
+
+<span class="co"># DE genes at 5% FDR</span>
+de.genes &lt;-<span class="st"> </span><span class="kw">which</span>(DEtab1<span class="op">$</span>chisq.padj <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>)
+
+<span class="kw">length</span>(de.genes)
+<span class="co">#&gt; [1] 48</span>
+gene.names[de.genes]
+<span class="co">#&gt;  [1] &quot;Gene1&quot;  &quot;Gene2&quot;  &quot;Gene4&quot;  &quot;Gene5&quot;  &quot;Gene6&quot;  &quot;Gene8&quot;  &quot;Gene9&quot; </span>
+<span class="co">#&gt;  [8] &quot;Gene11&quot; &quot;Gene17&quot; &quot;Gene18&quot; &quot;Gene19&quot; &quot;Gene22&quot; &quot;Gene24&quot; &quot;Gene26&quot;</span>
+<span class="co">#&gt; [15] &quot;Gene28&quot; &quot;Gene32&quot; &quot;Gene37&quot; &quot;Gene38&quot; &quot;Gene40&quot; &quot;Gene42&quot; &quot;Gene45&quot;</span>
+<span class="co">#&gt; [22] &quot;Gene47&quot; &quot;Gene48&quot; &quot;Gene50&quot; &quot;Gene54&quot; &quot;Gene56&quot; &quot;Gene58&quot; &quot;Gene59&quot;</span>
+<span class="co">#&gt; [29] &quot;Gene61&quot; &quot;Gene63&quot; &quot;Gene65&quot; &quot;Gene66&quot; &quot;Gene69&quot; &quot;Gene72&quot; &quot;Gene73&quot;</span>
+<span class="co">#&gt; [36] &quot;Gene75&quot; &quot;Gene76&quot; &quot;Gene79&quot; &quot;Gene82&quot; &quot;Gene84&quot; &quot;Gene88&quot; &quot;Gene89&quot;</span>
+<span class="co">#&gt; [43] &quot;Gene90&quot; &quot;Gene94&quot; &quot;Gene95&quot; &quot;Gene96&quot; &quot;Gene97&quot; &quot;Gene99&quot;</span></code></pre></div>
+<p>Using the adjusted p-values in the last column of <code>DEtab1</code>, there are 48 genes significant at a 5% FDR.</p>
+</div>
+<div id="independent-random-effects-ire-model" class="section level3">
+<h3>Independent Random Effects (IRE) Model</h3>
+<p>Unlike the CRE model, the IRE model does not require the use of a subpopulation structure determined by a cluster analysis of the cells. Under this model, the random effects are assumed to be independent of one another. <em>The example provided in the previous section on the Correlated Random Effects model is repeated in this section. The only difference here is that the Independent Random Effects model is being used.</em></p>
+<p>To analyze discrete scRNA-seq data with the IRE model, the following input is required:</p>
+<ul>
+<li><code>Y</code> - data as a matrix or data.frame</li>
+<li><code>treatGroup</code> - vector or factor with the treatment assignments (control or treatment) of the cells.</li>
+<li><code>typeRE</code> - set to “ind”</li>
+</ul>
+<p>There no need to use the <code>subpop</code> parameter when the random effects are treated as independent.</p>
+<p>As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding <code>useCDR = FALSE</code> as an argument will exclude it from the analysis.</p>
+<p>A seed for the <code>vb</code> function is also included in the example code below to ensure reproducible results. <em>Note: Running this code may take several minutes</em></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain treatment assignments</span>
+treat &lt;-<span class="st"> </span><span class="kw">substr</span>(<span class="kw">colnames</span>(scDat), <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">stop =</span> <span class="dv">1</span>)
+
+<span class="co"># Analysis with IRE model</span>
+mod.IRE &lt;-<span class="st"> </span><span class="kw">scREhurdle</span>(<span class="dt">Y=</span>scDat, <span class="dt">treatGroup=</span>treat, <span class="dt">typeRE =</span> <span class="st">&quot;ind&quot;</span>, <span class="dt">stan_seed=</span><span class="dv">523</span>)
+
+<span class="co"># For the sake of brevity, the following is example output</span>
+<span class="co"># produced when running scREhurdle</span>
+
+<span class="co">#&gt; Running IRE Stan model... </span>
+<span class="co">#&gt; ------------------------------------------------------------</span>
+<span class="co">#&gt; EXPERIMENTAL ALGORITHM:</span>
+<span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable</span>
+<span class="co">#&gt;   or buggy. The interface is subject to change.</span>
+<span class="co">#&gt; ------------------------------------------------------------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Gradient evaluation took 0.002694 seconds</span>
+<span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 26.94 seconds.</span>
+<span class="co">#&gt; Adjust your expectations accordingly!</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Begin stochastic gradient ascent.</span>
+<span class="co">#&gt;   iter       ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
+<span class="co">#&gt;    100     -2e+04             1.000            1.000</span>
+<span class="co">#&gt;    200     -2e+04             0.570            1.000</span>
+<span class="co">#&gt;    300     -2e+04             0.384            0.140</span>
+<span class="co">#&gt;    400     -2e+04             0.290            0.140</span>
+<span class="co">#&gt;    ...       ...               ...              ...</span>
+<span class="co">#&gt;   5100     -1e+04             0.000            0.000</span>
+<span class="co">#&gt;   5200     -1e+04             0.000            0.000   MEDIAN ELBO CONVERGED</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior... </span>
+<span class="co">#&gt; COMPLETED.</span></code></pre></div>
+<p>After computation, <code>mod.IRE</code> is an object of class <code>scREhurdle.fit</code>. Information relevant to differential expression (i.e., parameter estimates and test statistics of the treatment indicator variables) can be extracted with <code>$deTab</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Table with DE analysis results
+DEtab2 &lt;-<span class="st"> </span>mod.IRE<span class="op">$</span>deTab
+<span class="kw">head</span>(DEtab2)
+<span class="co">#&gt;       treatGroupT_L        L.Z       L.pval treatGroupT_C       C.Z</span>
+<span class="co">#&gt; Gene1    -0.9431703 -1.1211612 0.2622192474     1.5490644  4.431649</span>
+<span class="co">#&gt; Gene2    -0.2931978 -0.3766431 0.7064388229     1.2772388  2.769814</span>
+<span class="co">#&gt; Gene3    -0.1819487 -0.2304525 0.8177401791     0.8897550  1.188244</span>
+<span class="co">#&gt; Gene4     2.3379011  3.4418975 0.0005776491    -0.9056783 -1.258354</span>
+<span class="co">#&gt; Gene5     0.4738016  0.5632616 0.5732567356     2.0966191  5.589860</span>
+<span class="co">#&gt; Gene6     0.3038094  0.3993658 0.6896237128     2.0051809  4.769410</span>
+<span class="co">#&gt;             C.pval     chisq   chisq.pval   chisq.padj</span>
+<span class="co">#&gt; Gene1 9.351499e-06 20.534380 3.475489e-05 1.930827e-04</span>
+<span class="co">#&gt; Gene2 5.608824e-03  7.805416 2.018717e-02 4.295142e-02</span>
+<span class="co">#&gt; Gene3 2.347374e-01  1.444553 4.856455e-01 5.518699e-01</span>
+<span class="co">#&gt; Gene4 2.082639e-01 13.357680 1.257236e-03 4.098110e-03</span>
+<span class="co">#&gt; Gene5 2.272525e-08 31.676919 1.322648e-07 1.653310e-06</span>
+<span class="co">#&gt; Gene6 1.847660e-06 23.014407 1.005738e-05 6.285865e-05</span></code></pre></div>
+<p>Parameter estimates, Z test statistics, and unadjusted p-values are displayed in the first six columns of <code>DEtab2</code>. Because a hurdle model has been fit, there are two sets of parameters and associated test statistics: one set from the logistic regression and one set from zero-truncated negative binomial regression. The first three columns represent the values associated with the logistic regression (note the “L” in the column names). The next three columns represent the values associated with count model (note the “C” in the column names). While this information is useful in determining whether genes are DE in terms of proportion of zeros or actual expression, more often the interest is in a single combined result. The <code>chisq</code> column provides the two-dimensional test statistics that combine information from both parts of the hurdle model to determine DE genes. The final two columns present the unadjusted and adjusted p-values of these test statistics. By default, p-values are adjusted with the Benjamini-Hochberg method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain gene names</span>
+gene.names &lt;-<span class="st"> </span><span class="kw">rownames</span>(scDat)
+
+<span class="co"># DE genes at 5% FDR</span>
+de.genes &lt;-<span class="st"> </span><span class="kw">which</span>(DEtab2<span class="op">$</span>chisq.padj <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>)
+
+<span class="kw">length</span>(de.genes)
+<span class="co">#&gt; [1] 49</span>
+gene.names[de.genes]
+<span class="co">#&gt;  [1] &quot;Gene1&quot;  &quot;Gene2&quot;  &quot;Gene4&quot;  &quot;Gene5&quot;  &quot;Gene6&quot;  &quot;Gene7&quot;  &quot;Gene8&quot; </span>
+<span class="co">#&gt;  [8] &quot;Gene9&quot;  &quot;Gene11&quot; &quot;Gene17&quot; &quot;Gene18&quot; &quot;Gene20&quot; &quot;Gene22&quot; &quot;Gene24&quot;</span>
+<span class="co">#&gt; [15] &quot;Gene26&quot; &quot;Gene28&quot; &quot;Gene32&quot; &quot;Gene37&quot; &quot;Gene38&quot; &quot;Gene42&quot; &quot;Gene45&quot;</span>
+<span class="co">#&gt; [22] &quot;Gene47&quot; &quot;Gene48&quot; &quot;Gene50&quot; &quot;Gene54&quot; &quot;Gene56&quot; &quot;Gene58&quot; &quot;Gene59&quot;</span>
+<span class="co">#&gt; [29] &quot;Gene60&quot; &quot;Gene61&quot; &quot;Gene63&quot; &quot;Gene65&quot; &quot;Gene66&quot; &quot;Gene69&quot; &quot;Gene72&quot;</span>
+<span class="co">#&gt; [36] &quot;Gene73&quot; &quot;Gene75&quot; &quot;Gene76&quot; &quot;Gene79&quot; &quot;Gene82&quot; &quot;Gene84&quot; &quot;Gene88&quot;</span>
+<span class="co">#&gt; [43] &quot;Gene89&quot; &quot;Gene90&quot; &quot;Gene94&quot; &quot;Gene95&quot; &quot;Gene96&quot; &quot;Gene97&quot; &quot;Gene99&quot;</span></code></pre></div>
+<p>Using the adjusted p-values in the last column of <code>DEtab2</code>, there are 49 genes significant at a 5% FDR.</p>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

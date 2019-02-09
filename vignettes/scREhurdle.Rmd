@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette demonstrates how to use the `scREhurdle` package to perform a differential expression analysis on discrete single-cell RNA-seq (scRNA-seq) data. It should be noted that `scREhurdle` does import the `rstan` package and the details for downloading and installing `rstan` can be found [here](https://mc-stan.org/users/interfaces/rstan).
+This vignette demonstrates how to use the `scREhurdle` package to perform a differential expression analysis on discrete single-cell RNA-seq (scRNA-seq) data. It should be noted that `scREhurdle` does import the `rstan` package. Details about `rstan` can be found [here](https://mc-stan.org/users/interfaces/rstan).
 
 ```{r, warning=FALSE}
 # Load the scREhurdle package
