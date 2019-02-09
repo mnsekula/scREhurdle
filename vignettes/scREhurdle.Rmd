@@ -4,7 +4,7 @@ author: "Michael Sekula"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{scREhurdle}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -75,7 +75,7 @@ To analyze discrete scRNA-seq data with the CRE model, the following input is re
 
 As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding `useCDR = FALSE` as an argument will exclude it from the analysis. 
 
-A seed for the `vb` function is also included in the example code below to ensure reproducible results. *Note: Running this code may take several minutes*
+A seed for the `vb` function is also included in the example code below to ensure reproducible results. *Note: Running this code may take several minutes.*
 
 ```{r, results='hide'}
 # Obtain treatment assignments
@@ -154,7 +154,7 @@ There no need to use the `subpop` parameter when the random effects are treated 
 
 As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding `useCDR = FALSE` as an argument will exclude it from the analysis. 
 
-A seed for the `vb` function is also included in the example code below to ensure reproducible results. *Note: Running this code may take several minutes*
+A seed for the `vb` function is also included in the example code below to ensure reproducible results. *Note: Running this code may take several minutes.*
 
 ```{r, results='hide'}
 # Obtain treatment assignments
