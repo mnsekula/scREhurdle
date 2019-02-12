@@ -9,5 +9,5 @@ R package implementing the methods from "Detection of differentially expressed g
 data using a hurdle model with correlated random effects".
 }
 \references{
-Stan Development Team (2017). RStan: the R interface to Stan. R package version 2.17.2. http://mc-stan.org
+Stan Development Team (2018). RStan: the R interface to Stan. R package version 2.18.2. http://mc-stan.org
 }

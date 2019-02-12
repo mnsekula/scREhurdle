@@ -12,7 +12,7 @@
 
 <meta name="author" content="Michael Sekula" />
 
-<meta name="date" content="2019-02-09" />
+<meta name="date" content="2019-02-12" />
 
 <title>Using the scREhurdle package</title>
 
@@ -92,17 +92,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using the scREhurdle package</h1>
 <h4 class="author"><em>Michael Sekula</em></h4>
-<h4 class="date"><em>2019-02-09</em></h4>
+<h4 class="date"><em>2019-02-12</em></h4>
 
 
 
-<p>This vignette demonstrates how to use the <code>scREhurdle</code> package to perform a differential expression analysis on discrete single-cell RNA-seq (scRNA-seq) data. It should be noted that <code>scREhurdle</code> does import the <code>rstan</code> package. Details about <code>rstan</code> can be found <a href="https://mc-stan.org/users/interfaces/rstan">here</a>.</p>
+<p>This vignette demonstrates how to use the <code>scREhurdle</code> package to perform a differential expression analysis on discrete single-cell RNA-seq (scRNA-seq) data. It should be noted that <code>scREhurdle</code> imports the <code>rstan</code> package to perform approximate Bayesian inference using automatic differentiation variational inference. Details about <code>rstan</code> can be found <a href="https://mc-stan.org/users/interfaces/rstan">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the scREhurdle package</span>
 <span class="kw">library</span>(scREhurdle)
 <span class="co">#&gt; Loading required package: Rcpp</span></code></pre></div>
 <div id="the-data" class="section level2">
 <h2>The Data</h2>
-<p>The <code>scREhurdle</code> function requires discrete scRNA-seq data, so either a matrix or data frame of read counts is acceptable. The rows of the data correspond to genes and the columns correspond to cells. For the purpose of this vignette, it is assumed that the dataset has already been cleaned and is ready to analyze. An example dataset is included in the <code>scREhurdle</code> package.</p>
+<p><code>scREhurdle</code> requires discrete scRNA-seq data, so either a matrix or data frame of read counts is acceptable. The rows of the data correspond to genes and the columns correspond to cells. For the purpose of this vignette, it is assumed that the dataset has already been cleaned and is ready to analyze. An example dataset is included with the <code>scREhurdle</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load data</span>
 <span class="kw">data</span>(toyDat)
 scDat &lt;-<span class="st"> </span>toyDat<span class="op">$</span>scDat
@@ -143,14 +143,14 @@ subpop[<span class="dv">26</span><span class="op">:</span><span class="dv">50</s
 </div>
 <div id="differential-expression-analysis" class="section level2">
 <h2>Differential Expression Analysis</h2>
-<p>The <code>scREhurdle</code> function uses Stan’s variational algorithm for approximate posterior sampling to determine differentially expressed (DE) genes. Essentially, <code>scREhurdle</code> is a wrapper function that allows users to use the <code>vb</code> function in <code>rstan</code> to implement the hurdle model methodology proposed in the <em>Detection of differentially expressed genes in discrete single-cell RNA sequencing data using a hurdle model with correlated random effects</em> manuscript. Details about the <code>vb</code> function can be found at the <a href="https://mc-stan.org/users/interfaces/rstan">RStan website</a>.</p>
+<p>The <code>scREhurdle</code> function uses Stan’s variational algorithm for approximate posterior sampling to determine differentially expressed (DE) genes. Essentially, <code>scREhurdle</code> is a wrapper function that allows users to interface with the <code>vb</code> function in <code>rstan</code> when implementing the hurdle model methodology proposed in the “Detection of differentially expressed genes in discrete single-cell RNA sequencing data using a hurdle model with correlated random effects” manuscript. Details about the <code>vb</code> function can be found at the <a href="https://mc-stan.org/users/interfaces/rstan">RStan website</a>.</p>
 <p>The main parameters of the <code>scREhurdle</code> function are listed below:</p>
 <ul>
-<li><code>Y</code> - data.frame or matrix where the rows correspond to genes and columns correspond to cells.</li>
+<li><code>Y</code> - matrix or data.frame where the rows correspond to genes and columns correspond to cells.</li>
 <li><code>treatGroup</code> - vector or factor indicating the treatment assignments (control or treatment) of the cells.</li>
 <li><code>useCDR</code> - whether CDR, the proportion of genes expressed per cell, is calculated and used in model matrix.</li>
-<li><code>typeRE</code> - set the type of random effect to use.</li>
-<li><code>subpop</code> - vector or factor of length indicating the subpopulation assignment of cells. Used ONLY in the correlated RE model.</li>
+<li><code>typeRE</code> - set the type of random effects to use.</li>
+<li><code>subpop</code> - vector or factor indicating the subpopulation assignment of cells (used ONLY in the correlated random effects model).</li>
 </ul>
 <p>These parameters help the user define the modeling structure for differential expression analysis. All parameters of the <code>vb</code> function can be passed through <code>scREhurdle</code>.</p>
 <div id="correlated-random-effects-cre-model" class="section level3">
@@ -158,13 +158,13 @@ subpop[<span class="dv">26</span><span class="op">:</span><span class="dv">50</s
 <p>The CRE model requires the use of a subpopulation structure determined by a cluster analysis of the cells. <em>See the next section on Independent Random Effects if no subpopulation structure is being used.</em></p>
 <p>To analyze discrete scRNA-seq data with the CRE model, the following input is required:</p>
 <ul>
-<li><code>Y</code> - data as a matrix or data.frame</li>
+<li><code>Y</code> - count (integer) data as a matrix or data.frame.</li>
 <li><code>treatGroup</code> - vector or factor with the treatment assignments (control or treatment) of the cells.</li>
-<li><code>typeRE</code> - set to “cor”</li>
-<li><code>subpop</code> - vector or factor of length indicating the subpopulation assignment of cells.</li>
+<li><code>typeRE</code> - set to “cor”.</li>
+<li><code>subpop</code> - vector or factor indicating the subpopulation assignment of cells.</li>
 </ul>
-<p>As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding <code>useCDR = FALSE</code> as an argument will exclude it from the analysis.</p>
-<p>A seed for the <code>vb</code> function is also included in the example code below to ensure reproducible results. <em>Note: Running this code may take several minutes.</em></p>
+<p>As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding <code>useCDR = FALSE</code> as an argument to the <code>scREhurdle</code> function will exclude it from the analysis.</p>
+<p>A seed for the <code>vb</code> function is also included in the example code below to ensure reproducible results.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain treatment assignments</span>
 treat &lt;-<span class="st"> </span><span class="kw">substr</span>(<span class="kw">colnames</span>(scDat), <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">stop =</span> <span class="dv">1</span>)
 
@@ -172,34 +172,34 @@ treat &lt;-<span class="st"> </span><span class="kw">substr</span>(<span class="
 mod.CRE &lt;-<span class="st"> </span><span class="kw">scREhurdle</span>(<span class="dt">Y=</span>scDat, <span class="dt">treatGroup=</span>treat, <span class="dt">typeRE=</span><span class="st">&quot;cor&quot;</span>, <span class="dt">subpop=</span>subpop, <span class="dt">stan_seed=</span><span class="dv">523</span>)
 
 <span class="co"># For the sake of brevity, the following is example output</span>
-<span class="co"># produced when running scREhurdle</span>
-
+<span class="co"># produced when running the scREhurdle function</span>
+<span class="co">#&gt;</span>
 <span class="co">#&gt; Running CRE Stan model... </span>
-<span class="co">#&gt; ------------------------------------------------------------</span>
-<span class="co">#&gt; EXPERIMENTAL ALGORITHM:</span>
-<span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable</span>
-<span class="co">#&gt;   or buggy. The interface is subject to change.</span>
-<span class="co">#&gt; ------------------------------------------------------------</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Gradient evaluation took 0.00335 seconds</span>
-<span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 33.5 seconds.</span>
-<span class="co">#&gt; Adjust your expectations accordingly!</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Begin stochastic gradient ascent.</span>
-<span class="co">#&gt;   iter       ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
-<span class="co">#&gt;    100     -2e+04             1.000            1.000</span>
-<span class="co">#&gt;    200     -2e+04             0.564            1.000</span>
-<span class="co">#&gt;    300     -2e+04             0.382            0.128</span>
-<span class="co">#&gt;    400     -2e+04             0.288            0.128</span>
-<span class="co">#&gt;    ...       ...               ...              ...</span>
-<span class="co">#&gt;   7800     -1e+04             0.000            0.000</span>
-<span class="co">#&gt;   7900     -1e+04             0.000            0.000   MEAN ELBO CONVERGED</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior... </span>
-<span class="co">#&gt; COMPLETED.</span></code></pre></div>
+<span class="co">#&gt; Chain 1: ------------------------------------------------------------</span>
+<span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span>
+<span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span>
+<span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span>
+<span class="co">#&gt; Chain 1: ------------------------------------------------------------</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.00357 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 35.7 seconds.</span>
+<span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span>
+<span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
+<span class="co">#&gt; Chain 1:    100       -18252.944             1.000            1.000</span>
+<span class="co">#&gt; Chain 1:    200       -16177.294             0.564            1.000</span>
+<span class="co">#&gt; Chain 1:    300       -15904.037             0.382            0.128</span>
+<span class="co">#&gt; Chain 1:    400       -15781.913             0.288            0.128</span>
+<span class="co">#&gt;  ...       ...               ...              ...              ...</span>
+<span class="co">#&gt; Chain 1:   7800       -14849.884             0.000            0.000</span>
+<span class="co">#&gt; Chain 1:   7900       -14849.125             0.000            0.000   MEAN ELBO CONVERGED</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span>
+<span class="co">#&gt; Chain 1: COMPLETED.</span></code></pre></div>
 <p>After computation, <code>mod.CRE</code> is an object of class <code>scREhurdle.fit</code>. Information relevant to differential expression (i.e., parameter estimates and test statistics of the treatment indicator variables) can be extracted with <code>$deTab</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Table with DE analysis results
 DEtab1 &lt;-<span class="st"> </span>mod.CRE<span class="op">$</span>deTab
@@ -218,7 +218,7 @@ DEtab1 &lt;-<span class="st"> </span>mod.CRE<span class="op">$</span>deTab
 <span class="co">#&gt; Gene4 1.138133e-01 14.712229 6.386752e-04 2.280983e-03</span>
 <span class="co">#&gt; Gene5 3.469794e-09 35.198573 2.273668e-08 3.248097e-07</span>
 <span class="co">#&gt; Gene6 1.147404e-06 23.892133 6.484690e-06 4.631921e-05</span></code></pre></div>
-<p>Parameter estimates, Z test statistics, and unadjusted p-values are displayed in the first six columns of <code>DEtab1</code>. Because a hurdle model has been fit, there are two sets of parameters and associated test statistics: one set from the logistic regression and one set from zero-truncated negative binomial regression. The first three columns represent the values associated with the logistic regression (note the “L” in the column names). The next three columns represent the values associated with count model (note the “C” in the column names). While this information is useful in determining whether genes are DE in terms of proportion of zeros or actual expression, more often the interest is in a single combined result. The <code>chisq</code> column provides the two-dimensional test statistics that combine information from both parts of the hurdle model to determine DE genes. The final two columns present the unadjusted and adjusted p-values of these test statistics. By default, p-values are adjusted with the Benjamini-Hochberg method.</p>
+<p>Parameter estimates, Z test statistics, and unadjusted p-values are displayed in the first six columns of <code>DEtab1</code>. Since a hurdle model has been fit, there are two sets of parameters and associated test statistics: one set from the logistic regression and one set from zero-truncated negative binomial regression. The first three columns represent the values associated with the logistic regression (note the “L” in the column names). The next three columns represent the values associated with count model (note the “C” in the column names). While this information is useful in determining whether genes are DE in terms of proportion of zeros or actual expression, more often the interest is in a single combined result. The <code>chisq</code> column provides the two-dimensional test statistics that combine information from both parts of the hurdle model to determine DE genes. The final two columns present the unadjusted and adjusted p-values of these test statistics. By default, p-values are adjusted with the Benjamini-Hochberg method.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain gene names</span>
 gene.names &lt;-<span class="st"> </span><span class="kw">rownames</span>(scDat)
 
@@ -239,16 +239,16 @@ gene.names[de.genes]
 </div>
 <div id="independent-random-effects-ire-model" class="section level3">
 <h3>Independent Random Effects (IRE) Model</h3>
-<p>Unlike the CRE model, the IRE model does not require the use of a subpopulation structure determined by a cluster analysis of the cells. Under this model, the random effects are assumed to be independent of one another. <em>The example provided in the previous section on the Correlated Random Effects model is repeated in this section. The only difference here is that the Independent Random Effects model is being used.</em></p>
+<p>Unlike the CRE model, the IRE model does not require the use of a subpopulation structure determined by a cluster analysis of the cells. Under this model, the random effects are assumed to be independent of one another. The example provided in the previous section on the Correlated Random Effects model is repeated in this section. The only difference here is that the Independent Random Effects model is being used.</p>
 <p>To analyze discrete scRNA-seq data with the IRE model, the following input is required:</p>
 <ul>
-<li><code>Y</code> - data as a matrix or data.frame</li>
+<li><code>Y</code> - count (integer) data as a matrix or data.frame.</li>
 <li><code>treatGroup</code> - vector or factor with the treatment assignments (control or treatment) of the cells.</li>
-<li><code>typeRE</code> - set to “ind”</li>
+<li><code>typeRE</code> - set to “ind”.</li>
 </ul>
-<p>There no need to use the <code>subpop</code> parameter when the random effects are treated as independent.</p>
-<p>As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding <code>useCDR = FALSE</code> as an argument will exclude it from the analysis.</p>
-<p>A seed for the <code>vb</code> function is also included in the example code below to ensure reproducible results. <em>Note: Running this code may take several minutes.</em></p>
+<p>There is no need to use the <code>subpop</code> parameter when the random effects are treated as independent.</p>
+<p>As default, the proportion of genes expressed per cell is used as a covariate in the model matrix. While it is recommended to use this covariate, adding <code>useCDR = FALSE</code> as an argument to the <code>scREhurdle</code> function will exclude it from the analysis.</p>
+<p>A seed for the <code>vb</code> function is also included in the example code below to ensure reproducible results.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain treatment assignments</span>
 treat &lt;-<span class="st"> </span><span class="kw">substr</span>(<span class="kw">colnames</span>(scDat), <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">stop =</span> <span class="dv">1</span>)
 
@@ -257,33 +257,33 @@ mod.IRE &lt;-<span class="st"> </span><span class="kw">scREhurdle</span>(<span c
 
 <span class="co"># For the sake of brevity, the following is example output</span>
 <span class="co"># produced when running scREhurdle</span>
-
+<span class="co">#&gt; </span>
 <span class="co">#&gt; Running IRE Stan model... </span>
-<span class="co">#&gt; ------------------------------------------------------------</span>
-<span class="co">#&gt; EXPERIMENTAL ALGORITHM:</span>
-<span class="co">#&gt;   This procedure has not been thoroughly tested and may be unstable</span>
-<span class="co">#&gt;   or buggy. The interface is subject to change.</span>
-<span class="co">#&gt; ------------------------------------------------------------</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Gradient evaluation took 0.002694 seconds</span>
-<span class="co">#&gt; 1000 transitions using 10 leapfrog steps per transition would take 26.94 seconds.</span>
-<span class="co">#&gt; Adjust your expectations accordingly!</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Begin stochastic gradient ascent.</span>
-<span class="co">#&gt;   iter       ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
-<span class="co">#&gt;    100     -2e+04             1.000            1.000</span>
-<span class="co">#&gt;    200     -2e+04             0.570            1.000</span>
-<span class="co">#&gt;    300     -2e+04             0.384            0.140</span>
-<span class="co">#&gt;    400     -2e+04             0.290            0.140</span>
-<span class="co">#&gt;    ...       ...               ...              ...</span>
-<span class="co">#&gt;   5100     -1e+04             0.000            0.000</span>
-<span class="co">#&gt;   5200     -1e+04             0.000            0.000   MEDIAN ELBO CONVERGED</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Drawing a sample of size 1000 from the approximate posterior... </span>
-<span class="co">#&gt; COMPLETED.</span></code></pre></div>
+<span class="co">#&gt; Chain 1: ------------------------------------------------------------</span>
+<span class="co">#&gt; Chain 1: EXPERIMENTAL ALGORITHM:</span>
+<span class="co">#&gt; Chain 1:   This procedure has not been thoroughly tested and may be unstable</span>
+<span class="co">#&gt; Chain 1:   or buggy. The interface is subject to change.</span>
+<span class="co">#&gt; Chain 1: ------------------------------------------------------------</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.003562 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 35.62 seconds.</span>
+<span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Begin stochastic gradient ascent.</span>
+<span class="co">#&gt; Chain 1:   iter             ELBO   delta_ELBO_mean   delta_ELBO_med   notes </span>
+<span class="co">#&gt; Chain 1:    100       -18172.718             1.000            1.000</span>
+<span class="co">#&gt; Chain 1:    200       -15942.644             0.570            1.000</span>
+<span class="co">#&gt; Chain 1:    300       -15743.173             0.384            0.140</span>
+<span class="co">#&gt; Chain 1:    400       -15636.951             0.290            0.140</span>
+<span class="co">#&gt;    ...     ...               ...              ...              ...</span>
+<span class="co">#&gt; Chain 1:   5100       -14837.830             0.000            0.000</span>
+<span class="co">#&gt; Chain 1:   5200       -14837.006             0.000            0.000   MEDIAN ELBO CONVERGED</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Drawing a sample of size 1000 from the approximate posterior... </span>
+<span class="co">#&gt; Chain 1: COMPLETED.</span></code></pre></div>
 <p>After computation, <code>mod.IRE</code> is an object of class <code>scREhurdle.fit</code>. Information relevant to differential expression (i.e., parameter estimates and test statistics of the treatment indicator variables) can be extracted with <code>$deTab</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Table with DE analysis results
 DEtab2 &lt;-<span class="st"> </span>mod.IRE<span class="op">$</span>deTab
@@ -302,7 +302,7 @@ DEtab2 &lt;-<span class="st"> </span>mod.IRE<span class="op">$</span>deTab
 <span class="co">#&gt; Gene4 2.082639e-01 13.357680 1.257236e-03 4.098110e-03</span>
 <span class="co">#&gt; Gene5 2.272525e-08 31.676919 1.322648e-07 1.653310e-06</span>
 <span class="co">#&gt; Gene6 1.847660e-06 23.014407 1.005738e-05 6.285865e-05</span></code></pre></div>
-<p>Parameter estimates, Z test statistics, and unadjusted p-values are displayed in the first six columns of <code>DEtab2</code>. Because a hurdle model has been fit, there are two sets of parameters and associated test statistics: one set from the logistic regression and one set from zero-truncated negative binomial regression. The first three columns represent the values associated with the logistic regression (note the “L” in the column names). The next three columns represent the values associated with count model (note the “C” in the column names). While this information is useful in determining whether genes are DE in terms of proportion of zeros or actual expression, more often the interest is in a single combined result. The <code>chisq</code> column provides the two-dimensional test statistics that combine information from both parts of the hurdle model to determine DE genes. The final two columns present the unadjusted and adjusted p-values of these test statistics. By default, p-values are adjusted with the Benjamini-Hochberg method.</p>
+<p>Parameter estimates, Z test statistics, and unadjusted p-values are displayed in the first six columns of <code>DEtab2</code>. Since a hurdle model has been fit, there are two sets of parameters and associated test statistics: one set from the logistic regression and one set from zero-truncated negative binomial regression. The first three columns represent the values associated with the logistic regression (note the “L” in the column names). The next three columns represent the values associated with count model (note the “C” in the column names). While this information is useful in determining whether genes are DE in terms of proportion of zeros or actual expression, more often the interest is in a single combined result. The <code>chisq</code> column provides the two-dimensional test statistics that combine information from both parts of the hurdle model to determine DE genes. The final two columns present the unadjusted and adjusted p-values of these test statistics. By default, p-values are adjusted with the Benjamini-Hochberg method.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain gene names</span>
 gene.names &lt;-<span class="st"> </span><span class="kw">rownames</span>(scDat)
 
