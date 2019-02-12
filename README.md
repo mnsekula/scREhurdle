@@ -1,6 +1,6 @@
 # scREhurdle
 
-**scREhurdle** is an R package for detecting differntially expressed genes in discrete single-cell RNA sequencing data. This package interfaces with [`rstan`](https://mc-stan.org/users/interfaces/rstan) and fits a mixed effect hurdle model on zero-inflated count data. The `rstan` package should be
+**scREhurdle** is an R package for detecting differentially expressed genes in discrete single-cell RNA sequencing data. This package interfaces with [`rstan`](https://mc-stan.org/users/interfaces/rstan) and fits a mixed effect hurdle model on zero-inflated count data. The `rstan` package should be
 installed and working properly before installing **scREhurdle**. See [Rstan Getting Started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) for details.
 
 ## Installation
@@ -23,7 +23,7 @@ Windows users with both 32 and 64 bit versions of R installed on their machine m
 require(devtools)
 devtools::install_github("mnsekula/scREhurdle", INSTALL_opts = "--no-multiarch")
 ```
-This will build and install the **scREhurdle** package for the version (32 bit or 64 bit) of R the code is run on.
+This will build and install the **scREhurdle** package for the version of R (either 32 bit or 64 bit) the code is run on.
 
 ## Getting Started
 The package vignette demonstrates how to use the **scREhurdle** package to perform a differential expression analysis. This vignette can be viewed online [here](http://htmlpreview.github.io/?https://github.com/mnsekula/scREhurdle/blob/master/scREhurdle.html).
